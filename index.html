@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>焊接参数数据库</title>
+    <style>
+        /* CSS样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(78, 144, 254, 0.5);
+        }
+
+        button {
+            background: #4e90fe;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto 30px;
+        }
+
+        button:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+        }
+
+        .result {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 8px;
+            color: #333;
+            display: none;
+        }
+
+        .result-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>焊接参数数据库</h1>
+        
+        <div class="input-group">
+            <input type="text" placeholder="材料厚度 (mm)" id="input1">
+            <input type="text" placeholder="材料类型" id="input2">
+            <input type="text" placeholder="焊接类型" id="input3">
+            <input type="text" placeholder="保护气体" id="input4">
+        </div>
+
+        <button onclick="searchData()">查询参数</button>
+
+        <div class="result" id="result">
+            <div class="result-item" id="output1"></div>
+            <div class="result-item" id="output2"></div>
+            <div class="result-item" id="output3"></div>
+            <div class="result-item" id="output4"></div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据库
+        let database = [
+            {
+                inputs: ["2", "不锈钢", "MIG", "Ar"],
+                outputs: ["电流: 120A", "电压: 22V", "速度: 40cm/min", "气体流量: 15L/min"]
+            },
+            {
+                inputs: ["3", "碳钢", "TIG", "Ar+2%O2"],
+                outputs: ["电流: 150A", "电压: 24V", "速度: 35cm/min", "气体流量: 12L/min"]
+            }
+        ];
+
+        function searchData() {
+            // 获取输入值
+            const inputs = [
+                document.getElementById('input1').value.trim(),
+                document.getElementById('input2').value.trim(),
+                document.getElementById('input3').value.trim(),
+                document.getElementById('input4').value.trim()
+            ];
+
+            // 简单验证
+            if (inputs.some(input => input === "")) {
+                alert("请填写所有查询条件");
+                return;
+            }
+
+            // 查询数据库
+            const result = database.find(item => 
+                item.inputs.every((value, index) => 
+                    value.toLowerCase() === inputs[index].toLowerCase()
+                )
+            );
+
+            // 显示结果
+            const resultDiv = document.getElementById('result');
+            if (result) {
+                document.getElementById('output1').textContent = result.outputs[0];
+                document.getElementById('output2').textContent = result.outputs[1];
+                document.getElementById('output3').textContent = result.outputs[2];
+                document.getElementById('output4').textContent = result.outputs[3];
+                resultDiv.style.display = 'block';
+            } else {
+                alert("未找到匹配的焊接参数");
+                resultDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
